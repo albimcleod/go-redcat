@@ -11,10 +11,12 @@ import (
 )
 
 const (
-	prefixURL  = "/api/v1"
-	loginURL   = "/login"
-	salesByURL = "/reports/loyalty/membersalesby"
-	authHeader = "X-Redcat-Authtoken"
+	prefixURL = "/api/v1"
+	loginURL  = "/login"
+	//salesByURL  = "/reports/loyalty/membersalesby"
+	salesByURL  = "/reports/kpi/salesby"
+	locationURL = "/reports/data/locations"
+	authHeader  = "X-Redcat-Authtoken"
 )
 
 var (
@@ -43,13 +45,13 @@ func (v *Redcat) AccessToken(username string, password string) (bool, error) {
 	u, _ := url.ParseRequestURI(v.LoginURL)
 	urlStr := fmt.Sprintf("%v", u)
 
-	fmt.Println("Connecting to redcat", urlStr)
-
 	request := LoginRequest{
 		Username: username,
 		Password: password,
 		AuthType: "U",
 	}
+
+	fmt.Println("Connecting to redcat", urlStr, request)
 
 	body, err := json.Marshal(request)
 
@@ -92,7 +94,7 @@ func (v *Redcat) AccessToken(username string, password string) (bool, error) {
 			return false, err
 		}
 
-		fmt.Println("Connection Response", resp)
+		fmt.Println("Connection Response", resp, string(rawResBody))
 
 		v.accessToken = resp.Token
 
@@ -114,6 +116,8 @@ func (v *Redcat) RequestSalesReport(request ReportRequest) (*ReportResult, error
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Sending body", string(body))
 
 	client := &http.Client{}
 
@@ -138,6 +142,8 @@ func (v *Redcat) RequestSalesReport(request ReportRequest) (*ReportResult, error
 			return nil, err
 		}
 
+		fmt.Println("Got response", string(rawResBody))
+
 		var resp ReportResult
 
 		err = json.Unmarshal(rawResBody, &resp)
@@ -149,4 +155,47 @@ func (v *Redcat) RequestSalesReport(request ReportRequest) (*ReportResult, error
 	}
 
 	return nil, fmt.Errorf("Failed to get Redcat Sales Report %s", res.Status)
+}
+
+// RequestLocations will request a report from Redcat
+func (v *Redcat) RequestLocations() (string, error) {
+	urlStr := v.BaseURL + locationURL
+
+	fmt.Println("Connecting to redcat", urlStr)
+
+	client := &http.Client{}
+
+	r, err := http.NewRequest("POST", urlStr, nil)
+	if err != nil {
+		return "", err
+	}
+
+	r.Header = http.Header(make(map[string][]string))
+	r.Header.Set(authHeader, v.accessToken)
+	r.Header.Set("Content-Type", "application/json")
+
+	res, err := client.Do(r)
+	if err != nil {
+		return "", err
+	}
+
+	if res.StatusCode == 200 {
+
+		rawResBody, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return "", err
+		}
+		return string(rawResBody), nil
+
+		/*var resp ReportResult
+
+		err = json.Unmarshal(rawResBody, &resp)
+
+		if err != nil {
+			return nil, err
+		}
+		return &resp, nil*/
+	}
+
+	return "", fmt.Errorf("Failed to get Redcat Sales Report %s", res.Status)
 }

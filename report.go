@@ -25,6 +25,7 @@ func (obj *ReportRequest) AddConstraint(field string, condition string, value js
 		Value:     value,
 	}
 	obj.Constraints.Value = append(obj.Constraints.Value, cv)
+
 }
 
 //Constraints is the struct to add constraints to a report from Redcat
