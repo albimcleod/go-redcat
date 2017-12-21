@@ -6,7 +6,7 @@ import "encoding/json"
 type ReportRequest struct {
 	Distinct bool     `json:"Distinct,omitempty"`
 	Fields   []string `json:"Fields"`
-	// Order    []OrderBy `json:"Order"`
+	//Order       []OrderBy   `json:"Order"`
 	Limit       int         `json:"Limit"`
 	Start       int         `json:"Start"`
 	Constraints Constraints `json:"Constraints,omitempty"`

@@ -142,7 +142,7 @@ func (v *Redcat) RequestSalesReport(request ReportRequest) (*ReportResult, error
 			return nil, err
 		}
 
-		fmt.Println("Got response", string(rawResBody))
+		//fmt.Println("Got response", string(rawResBody))
 
 		var resp ReportResult
 
