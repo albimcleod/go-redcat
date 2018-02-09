@@ -18,7 +18,7 @@ func (obj *ReportRequest) AddField(field string) {
 }
 
 //AddField will add a field to the report request
-func (obj *ReportRequest) AddConstraint(field string, condition string, value json.Number) {
+func (obj *ReportRequest) AddConstraint(field string, condition string, value string) {
 	cv := ConstraintValue{
 		Field:     field,
 		Condition: condition,
@@ -36,9 +36,9 @@ type Constraints struct {
 
 //ConstraintValue is ...
 type ConstraintValue struct {
-	Field     string      `json:"Field"`
-	Condition string      `json:"Condition"`
-	Value     json.Number `json:"Value"`
+	Field     string `json:"Field"`
+	Condition string `json:"Condition"`
+	Value     string `json:"Value"`
 }
 
 type ReportResult struct {

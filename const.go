@@ -13,4 +13,5 @@ const (
 	FieldStore              = "StoreID"
 	FieldSaleID             = "SaleID"
 	FieldLastUpdateDateTime = "LastUpdateDateTime"
+	FieldDateTime           = "DateTime"
 )
