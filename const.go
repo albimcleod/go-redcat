@@ -14,4 +14,7 @@ const (
 	FieldSaleID             = "SaleID"
 	FieldLastUpdateDateTime = "LastUpdateDateTime"
 	FieldDateTime           = "DateTime"
+	FieldTxnHour            = "TxnHour"
+	RealTimeTxn             = "RealTimeTxn"
+	FieldDateSimple         = "Date"
 )
