@@ -1,6 +1,9 @@
 package goredcat
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 //ReportRequest is the struct to request a report from Redcat
 type ReportRequest struct {
@@ -31,7 +34,7 @@ func (obj *ReportRequest) AddConstraint(field string, condition string, value st
 //Constraints is the struct to add constraints to a report from Redcat
 type Constraints struct {
 	Operator string            `json:"Operator,omitempty"`
-	Value    []ConstraintValue `json:"Value",omitempty`
+	Value    []ConstraintValue `json:"Value,omitempty"`
 }
 
 //ConstraintValue is ...
@@ -41,9 +44,23 @@ type ConstraintValue struct {
 	Value     string `json:"Value"`
 }
 
+type JsonNumberWrapper json.Number
+
+func (w *JsonNumberWrapper) UnmarshalJSON(data []byte) error {
+	var res json.Number
+	err := json.Unmarshal(data, &res)
+	if err != nil {
+		s := string(bytes.Trim(data, "\""))
+		*w = JsonNumberWrapper(s)
+		return nil
+	}
+	*w = JsonNumberWrapper(res)
+	return nil
+}
+
 type ReportResult struct {
-	Axis    []string        `json:"axis"`
-	Count   int             `json:"count"`
-	Success bool            `json:"success"`
-	Data    [][]json.Number `json:"data"`
+	Axis    []string              `json:"axis"`
+	Count   int                   `json:"count"`
+	Success bool                  `json:"success"`
+	Data    [][]JsonNumberWrapper `json:"data"`
 }
